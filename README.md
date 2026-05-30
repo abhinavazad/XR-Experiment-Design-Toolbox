@@ -17,7 +17,7 @@ Scripts use preprocessor directives (`#if MAGICLEAP`, `#if OCULUS`, `#if UNITY_E
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                    ButtonActivation                              │
-│  XR mode selector (PR/AR/MR/VR) · global debug logger ·         │
+│  XR mode selector (PR/AR/MR/VR) · global debug logger ·          │
 │  UI panel toggling · passthrough control · log file I/O          │
 └────────────────┬─────────────────────────────────────────────────┘
                  │ reads XRMode, saves logs to ExperimentManager.filePath
