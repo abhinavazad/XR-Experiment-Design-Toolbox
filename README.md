@@ -30,10 +30,10 @@ Scripts use preprocessor directives (`#if MAGICLEAP`, `#if OCULUS`, `#if UNITY_E
 └───────┬──────────────────────┬───────────────────────────────────┘
         │ calls saveFileatStart│ calls saveFileatStop
         ▼                      ▼
-┌─────────────────────────┐  ┌──────────────────┐
+┌─────────────────────────┐  ┌───────────────────┐
 │ AnchorReinitiateManager │  │ ButtonActivation  │
 │ Procrustes registration │  │ (log persistence) │
-│ + scene alignment       │  └──────────────────┘
+│ + scene alignment       │  └───────────────────┘
 └──────────┬──────────────┘
            │ reads placeablePrefabs, anchor data
            ▼
