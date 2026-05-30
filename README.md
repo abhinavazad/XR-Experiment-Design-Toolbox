@@ -72,6 +72,9 @@ In-XR distance measurement tool. Three-press workflow on the controller: (1) spa
 ### SceneReloader.cs (328 lines)
 Editor and runtime utility to reload a scene layout from a JSON anchor file. Instantiates prefabs at saved positions/rotations under a designated parent. Includes a scene-save function (Editor only) and fallback pink-cube instantiation for missing prefabs. Used by `ReplayMovement`.
 
+### PrefabPlacer.cs (109 lines)
+Lightweight JSON-to-scene loader. Reads an anchor JSON file from an absolute path, deserialises prefab names with position and rotation data, and instantiates the matching prefabs at runtime. Shares the same serialisable data schema (`PrefabData`, `PositionData`, `RotationData`, `AnchorData`, `AnchorsData`) as SceneReloader but without the editor-save, coordinate-shift, or fallback-cube features — useful as a minimal standalone scene reconstructor.
+
 ### ReplayMovement.cs (115 lines)
 Replays recorded participant trajectories from CSV data on an avatar GameObject. Parses elapsed time, position, and rotation, then interpolates movement frame-by-frame. Uses `SceneReloader.anchor0Pos/Rot` for coordinate re-alignment.
 
