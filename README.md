@@ -1,6 +1,6 @@
 # XR Experiment Design Toolbox — Scripts
 
-Unity C# scripts for conducting within-subjects behavioural experiments across extended reality (XR) modalities (PR / AR / MR / VR) in indoor environments.
+Unity C# scripts for conducting within-subjects behavioural experiments across extended reality (XR) modalities (AR / MR / VR) in indoor environments.
 
 ## Supported Platforms
 
