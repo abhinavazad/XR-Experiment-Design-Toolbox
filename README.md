@@ -6,7 +6,7 @@ Unity C# scripts for conducting within-subjects behavioural experiments across e
 
 Scripts use preprocessor directives (`#if MAGICLEAP`, `#if OCULUS`, `#if UNITY_EDITOR`) to compile platform-specific input and spatial-anchor code for:
 
-| Platform | Directive | HMD |
+| Platform | Directive | Target |
 |---|---|---|
 | Magic Leap 2 | `MAGICLEAP` | ML2 OST-HMD |
 | Meta Quest 3 | `OCULUS` | Quest 3 VST-HMD |
