@@ -1,3 +1,18 @@
+/*
+ * Anchor Design Script
+ * -------------------------
+ * Summary:
+
+ * Functionalities:
+
+ * Usage:
+
+ * Notes:
+ * - Oculus platform uses _anchorInstances which is an inbuilt List<OVRSpatialAnchor> and Magicleap uses a custom _anchorDataList. Both Oculus and Magicleap can run using the latter (_anchorDataList) but for now I'm keeping it.
+ * - Using List<OVRSpatialAnchor> -> it can assign inbuilt native Oculus's MR anchor feature, there is similar feature for ML to assign from ML too
+ * - Latest: Based on simple customs _anchorDataList
+ */
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,24 +21,6 @@ using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.Impl;
 using System.IO;
 
-/*
- * Anchor Design Script
- * -------------------------
- * Summary:
-
-
- * Functionalities:
-
-
-
- * Usage:
-
-
- * Notes:
- * - Oculus platform uses _anchorInstances which is an inbuilt List<OVRSpatialAnchor> and magicleap uses a custom _anchorDataList, both oculus and magicleap can run using the later(_anchorDataList) but for now im keep it.
- * - Using List<OVRSpatialAnchor> -> it can assign inbuilt native Oculus's MR anchor feature, there is similar feature for ML to assign from ML too
- * - Latest: Based on customs _anchorDataList only, YAY!
- */
 
 
 public class AnchorUIManager : MonoBehaviour
