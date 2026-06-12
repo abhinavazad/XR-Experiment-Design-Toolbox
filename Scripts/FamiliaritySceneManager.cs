@@ -1,13 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using TMPro;
-using UnityEngine.InputSystem;
-
-#if UNITY_EDITOR
-using UnityEditor; // Required for SceneAsset drag & drop in the Unity Editor
-#endif
-
-/// <summary>
+﻿/// <summary>
 /// SceneManagerVR handles scene transitions between the Familiarity Scene and the Main Experiment Scene.
 /// - Allows switching scenes using the Enter key.
 /// - Supports assigning SceneAssets in the Unity Editor.
@@ -17,6 +8,17 @@ using UnityEditor; // Required for SceneAsset drag & drop in the Unity Editor
 /// REQUIREMENT:
 /// // Make sure the scenes are added in the Build settings(And ticked) for the Scene names or assets to be recognised by the unity
 /// </summary>
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.InputSystem;
+
+#if UNITY_EDITOR
+using UnityEditor; // Required for SceneAsset drag & drop in the Unity Editor
+#endif
+
+
 public class SceneManagerVR : MonoBehaviour
 {
 
