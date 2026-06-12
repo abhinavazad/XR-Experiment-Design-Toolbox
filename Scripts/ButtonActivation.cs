@@ -1,3 +1,21 @@
+//### How It Works:
+//1. * *Button to Toggle One Object at a Time:**
+//   -Each button in `buttons` corresponds to a specific game object in `OneAtaTime`. Clicking a button enables its associated object and disables the rest.
+
+//2. **On-Off List Toggle:**
+//   -Pressing `OVRInput.Button.Three` toggles the active state of all objects in the `onOffList` list.
+
+//### Setup Instructions:
+//1. **Attach the Script:**
+//   -Add the script to an empty GameObject in your scene.
+
+//2. **Assign GameObjects and Buttons:**
+//   -Populate the `OneAtaTime` and `buttons` lists in the Inspector. Ensure their order matches (e.g., Button 1 -> Object 1).
+
+//3. * *Assign On - Off List: **
+//   -Populate the `onOffList` with the GameObjects you want to toggle on/off in bulk.
+
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,22 +30,6 @@ using UnityEngine.UI;
 using UnityEngine.XR.OpenXR;
 #endif
 
-//### How It Works:
-//1. * *Button to Toggle One Object at a Time:**
-//   -Each button in `buttons` corresponds to a specific game object in `OneAtaTime`. Clicking a button enables its associated object and disables the rest.
-
-//2. **On-Off List Toggle:**
-//   -Pressing `OVRInput.Button.Three` toggles the active state of all objects in the `onOffList` list.
-
-//### Setup Instructions:
-//1. **Attach the Script:**
-//   -Add the script to an empty GameObject in your scene.
-
-//2. **Assign GameObjects and Buttons:**
-//   -Populate the `OneAtaTime` and `buttons` lists in the Inspector.Ensure their order matches (e.g., Button 1 -> Object 1).
-
-//3. * *Assign On - Off List: **
-//   -Populate the `onOffList` with the GameObjects you want to toggle on/off in bulk.
 
 
 
