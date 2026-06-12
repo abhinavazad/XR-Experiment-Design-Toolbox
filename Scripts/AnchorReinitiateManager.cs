@@ -1,21 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using System.IO;
-using System.Linq;
-
-// Math.NET Numerics
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Single;
-using UnityEngine.UIElements;
-
-using UIToggle = UnityEngine.UI.Toggle;
-using UIButton = UnityEngine.UI.Button;
-#if MAGICLEAP
-using UnityEngine.XR.MagicLeap;
-#endif
 /*
  * AnchorReinitiateManager.cs
  *
@@ -45,6 +27,26 @@ using UnityEngine.XR.MagicLeap;
  * Author: [Abhinav Azad]
  * Date: [22-12-2024]
  */
+
+using System;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using System.IO;
+using System.Linq;
+
+// Math.NET Numerics
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Single;
+using UnityEngine.UIElements;
+
+using UIToggle = UnityEngine.UI.Toggle;
+using UIButton = UnityEngine.UI.Button;
+#if MAGICLEAP
+using UnityEngine.XR.MagicLeap;
+#endif
+
 
 public class AnchorReinitiateManager : MonoBehaviour
 {
