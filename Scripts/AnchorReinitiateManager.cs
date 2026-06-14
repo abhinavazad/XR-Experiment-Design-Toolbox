@@ -39,8 +39,6 @@ using System.Linq;
 // Math.NET Numerics
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
-using UnityEngine.UIElements;
-
 using UIToggle = UnityEngine.UI.Toggle;
 using UIButton = UnityEngine.UI.Button;
 #if MAGICLEAP
@@ -265,7 +263,7 @@ public class AnchorReinitiateManager : MonoBehaviour
     private void StartPlacingObject(GameObject prefab, Transform referenceTransform)
     {
         _currentPlacingObject = Instantiate(prefab, referenceTransform.position, Quaternion.identity);
-        DebugText.text = $"currentStep: {currentStep}, CurrentObj: {_currentPlacingObject.name}";
+        if (DebugText != null) DebugText.text = $"currentStep: {currentStep}, CurrentObj: {_currentPlacingObject.name}";
     }
 
     private void UpdatePlacingObject()
@@ -355,6 +353,9 @@ public class AnchorReinitiateManager : MonoBehaviour
 
         //initialising scale
         float scale = 1f;
+        Quaternion finalRotation = Quaternion.identity;
+        Vector3 finalTranslation = Vector3.zero;
+        bool useScaling = enableScalingToggle != null && enableScalingToggle.isOn;
 
         if (RegCount == 1) //
         {
@@ -369,6 +370,8 @@ public class AnchorReinitiateManager : MonoBehaviour
             Vector3 offsetPosition = regCubePosition - firstAnchor.Position;
             Quaternion offsetRotation = regCubeRotation * Quaternion.Inverse(firstAnchor.Rotation);
 
+            finalRotation = offsetRotation;
+            finalTranslation = offsetPosition;
 
             int iterationCount = 0;
             // Apply calculated transform to each anchor and instantiate in scene
@@ -419,8 +422,10 @@ public class AnchorReinitiateManager : MonoBehaviour
         {
             // Perform Procrustes Analysis
             var (rotation, translationNotused, scalea, markerCentroid, cubeCentroid) =
-                ProcrustesAnalysis(markerWorldPositions, registrationCubePositions, enableScalingToggle.isOn);
+                ProcrustesAnalysis(markerWorldPositions, registrationCubePositions, useScaling);
             scale = scalea;
+            finalRotation = rotation;
+            finalTranslation = translationNotused;
 
             int iterationCount = 0;
             // Apply calculated transform to each anchor and instantiate in scene
@@ -438,7 +443,7 @@ public class AnchorReinitiateManager : MonoBehaviour
                 Vector3 anchorRelative = anchorData.Position - markerCentroid;
 
                 // Rotate and scale if scaling is enabled
-                if (enableScalingToggle.isOn) anchorRelative *= scalea;
+                if (useScaling) anchorRelative *= scalea;
                 anchorRelative = rotation * anchorRelative;
 
                 // Finally translate to the new centroid
@@ -538,14 +543,19 @@ public class AnchorReinitiateManager : MonoBehaviour
         }
 
         // Create the ProcrustesResultData
-        // We'll store the quaternion as x,y,z,w and translation as x,y,z.
-        ProcrustesResultData alignmentRes = new ProcrustesResultData { };
+        // Store the quaternion as x,y,z,w and translation as x,y,z
+        ProcrustesResultData alignmentRes = new ProcrustesResultData
+        {
+            rotation = new float[] { finalRotation.x, finalRotation.y, finalRotation.z, finalRotation.w },
+            translation = new float[] { finalTranslation.x, finalTranslation.y, finalTranslation.z },
+            scale = scale
+        };
 
         var regDataWrapper = new RegistrationSaveData
         {
             registrationCubesData = new AnchorDataListWrapper { Anchors = registrationAnchors },
             regCount = RegCount,
-            scalingUsed = enableScalingToggle.isOn,
+            scalingUsed = useScaling,
 
             // Assign the Procrustes result
             alignmentResult = alignmentRes
@@ -558,9 +568,9 @@ public class AnchorReinitiateManager : MonoBehaviour
         File.WriteAllText(registrationSavePath, registrationJson);
         Debug.Log("Saved registration data at: " + registrationSavePath);
 
-        // Generate a random color
+        // Generate a color with fixed red and random green/blue components
         Color randomColor = new Color(
-            0.2f, // Random red value (0 to 1)
+            0.2f, // Fixed red value
             UnityEngine.Random.value, // Random green value (0 to 1)
             UnityEngine.Random.value  // Random blue value (0 to 1)
         );
@@ -568,13 +578,14 @@ public class AnchorReinitiateManager : MonoBehaviour
         // Uncomment if you dont want to remove registration cubes from the scene after alignment:
         foreach (var cube in registrationCubes)
         {
+            if (cube == null) continue;
             Renderer cubeRenderer = cube.GetComponent<Renderer>();
-            cubeRenderer.material.color = randomColor;
+            if (cubeRenderer != null) cubeRenderer.material.color = randomColor;
             //if (cube != null) Destroy(cube);
         }
 
-        UpdateUI($"Scene successfully reinitialized with Scaling {enableScalingToggle.isOn} = {scale}");
-        Debug.Log($"Scene successfully reinitialized with Scaling {enableScalingToggle.isOn} = {scale}");
+        UpdateUI($"Scene successfully reinitialized with Scaling {useScaling} = {scale}");
+        Debug.Log($"Scene successfully reinitialized with Scaling {useScaling} = {scale}");
         currentStep = 0;
     }
 
@@ -611,23 +622,26 @@ public class AnchorReinitiateManager : MonoBehaviour
             cubeMatrix.SetRow(i, cubeMatrix.Row(i) - cubeCentroidVec);
         }
 
-        // Compute covariance matrix: M^T * C  (if we want to go Marker->Cube, typically do marker^T * cube)
+        // Compute covariance matrix: H = markers^T * cubes
         var covariance = markerMatrix.TransposeThisAndMultiply(cubeMatrix);
 
-        // Perform SVD
+        // Perform SVD: H = U * Σ * V^T
         var svd = covariance.Svd();
-        // Construct rotation: R = V * U^T
-        // Because we did marker^T * cube, the typical formula for rotation is R = U * V^T; 
-        // but note the direction.  We'll keep to the standard approach below:
+
+        // Standard Orthogonal Procrustes solution: R = V * U^T
+        // (Schönemann, 1966; Eggert et al., 1997)
         var U = svd.U;
         var VT = svd.VT;
-        var rotationMatrix = U * VT;
+        var V = VT.Transpose();
+        var UT = U.Transpose();
+        var rotationMatrix = V * UT;
 
-        // Fix for reflection case (if det(R) < 0, flip sign of last column)
+        // Fix for reflection case: if det(R) < 0, negate last column of V
+        // This ensures a proper rotation (det = +1) rather than a reflection
         if (rotationMatrix.Determinant() < 0)
         {
-            U.SetColumn(U.ColumnCount - 1, U.Column(U.ColumnCount - 1).Multiply(-1));
-            rotationMatrix = U * VT;
+            V.SetColumn(V.ColumnCount - 1, V.Column(V.ColumnCount - 1).Multiply(-1));
+            rotationMatrix = V * UT;
         }
 
         // Convert to Unity Quaternion
@@ -725,11 +739,11 @@ public class AnchorReinitiateManager : MonoBehaviour
     {
         int inputValue;
         // Try to parse the input string to an integer
-        if (int.TryParse(input, out inputValue))
+        if (int.TryParse(input, out inputValue) && inputValue >= 1)
         {
             RegCount = inputValue;
+            registrationCubes = new GameObject[RegCount];
             Debug.Log($"Successfully converted input to integer: {inputValue}");
-            // You can now use inputValue as an integer
         }
         else
         {
