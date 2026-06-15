@@ -72,6 +72,8 @@ public class ExperimentManager : MonoBehaviour
     //public static ExperimentManager Instance;
 
     [Header("Experiment Settings")]
+    [Tooltip("Name used for the top-level output folder (e.g. 'FireEvacCivil', 'StreetCrossing').")]
+    public string experimentName = "Experiment"; // Configurable experiment/study name for file paths
     public Camera cameraToSave; // The camera to track and save
     public GameObject colliderCapsule; // Capsule collider attached to the camera
     public GameObject startingArea; // The starting area trigger
@@ -79,6 +81,16 @@ public class ExperimentManager : MonoBehaviour
     public GameObject finishArea2; // Second finish area trigger
     public TextMeshProUGUI uiInstructions; // UI Text for showing experiment completion
     public TextMeshProUGUI DebugText; // Reference to the TMP Debug text
+
+    [Header("UI Instruction Messages")]
+    [Tooltip("Message shown when the participant should approach the starting area.")]
+    public string readyMessage = "Please approach the Green Area in front of you to start the experiment";
+    [Tooltip("Message shown when the experiment starts (e.g. scenario instructions).")]
+    public string experimentStartMessage = "The experiment has started. Please follow the instructions.";
+    [Tooltip("Message shown when the experiment finishes.")]
+    public string experimentEndMessage = "Experiment Finished! Please take off your Headset.";
+    [Tooltip("Message shown when Start mode is toggled off.")]
+    public string idleMessage = "Press Start to enter the Experiment mode";
 
 
 
@@ -179,7 +191,7 @@ public class ExperimentManager : MonoBehaviour
             }
 
             fileName = $"Startup_Participant_Data_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}";
-            filePath = $"{Application.persistentDataPath}/FireEvacCivil/{DateTime.Now:yyyy-MM-dd}/{ButtonActivation.XRMode}_Startup_Exp{ExpID.text}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}/";
+            filePath = $"{Application.persistentDataPath}/{experimentName}/{DateTime.Now:yyyy-MM-dd}/{ButtonActivation.XRMode}_Startup_Exp{ExpID.text}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}/";
         }
 
         //Button click by force for testing
@@ -199,7 +211,7 @@ public class ExperimentManager : MonoBehaviour
     }
     private void UpdateFilePath(string newID)
     {
-        filePath = $"{Application.persistentDataPath}/FireEvacCivil/{DateTime.Now:yyyy-MM-dd}/{ButtonActivation.XRMode}_Exp{newID}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}/";
+        filePath = $"{Application.persistentDataPath}/{experimentName}/{DateTime.Now:yyyy-MM-dd}/{ButtonActivation.XRMode}_Exp{newID}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}/";
         Debug.Log($"Experiment folder Path changed to {filePath}");
     }
 
@@ -250,7 +262,7 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
-        // If we’re running in the Unity Editor and space bar is pressed,
+        // If weÂ’re running in the Unity Editor and space bar is pressed,
         // call the same method as if the button was clicked.
 #if UNITY_EDITOR
 
@@ -283,7 +295,7 @@ public class ExperimentManager : MonoBehaviour
 
             StartExpButton.image.color = Color.green; // Set to green
 
-            uiInstructions.text = "Please approach the Green Area infront of you to start the experiment";
+            uiInstructions.text = readyMessage;
             ToggleMeshRenderersByLayer(invisibleLayer1, true);
             ToggleMeshRenderersByLayer(invisibleLayer2, false);
             ToggleMeshRenderersByLayer(interactiveLayer, false);
@@ -307,7 +319,7 @@ public class ExperimentManager : MonoBehaviour
         }
         else
         {
-            uiInstructions.text = "Press Start to enter the Experitment mode";
+            uiInstructions.text = idleMessage;
 
             StartExpButton.image.color = defaultColor; // Revert to default color
 
@@ -386,7 +398,7 @@ public class ExperimentManager : MonoBehaviour
         lastPosition = cameraToSave.transform.position;
 
         // Alarming sound
-        uiInstructions.text = "There is a fire Emergency on this floor, please find a safe Exit Corridor";
+        uiInstructions.text = experimentStartMessage;
 
         // Turn objects invisible - Deactivate MeshRenderer for objects on the layer "InvisibleLayer"
         //InvisibleDebugText = "chosen layers = " + invisibleLayer1;
@@ -415,7 +427,7 @@ public class ExperimentManager : MonoBehaviour
 
             // Write the CSV header
             csvWriter = new StreamWriter(Path.Combine(filePath, fileName + ".csv"));
-            csvWriter.WriteLine("Timestamp,ElapsedTime,PositionX,PositionY,PositionZ,RotationX,RotationY,RotationZ,RotationW,Collisions");
+            csvWriter.WriteLine("Timestamp,ElapsedTime_ms,PositionX,PositionY,PositionZ,RotationX,RotationY,RotationZ,RotationW,Collisions");
         }
 
 
@@ -435,7 +447,7 @@ public class ExperimentManager : MonoBehaviour
         PlayClipWithDelay(clip2, 1f, false);
 
         // Update UI
-        uiInstructions.text = "Experiment Finished! Please take off your Headset.";
+        uiInstructions.text = experimentEndMessage;
 
         // Close the CSV writer
         csvWriter.Close();
@@ -613,7 +625,7 @@ public class ExperimentManager : MonoBehaviour
             if (!collisionObjectNames.ContainsKey(obj.Key))
             {
                 collisionObjectNames[obj.Key] = obj.Value; // Add unique collision
-                collisionCounter += collisionswithIDs.Count;
+                collisionCounter++;
                 Debug.Log($"{collisionCounter}th Collison detected: {collisionObjectNames}");
             }
         }
@@ -670,7 +682,7 @@ public class ExperimentManager : MonoBehaviour
     {
         if (area == null || colliderCapsule == null)
         {
-            Debug.Log($"Null Collidor: CollArea = {area} CaLCollier = {colliderCapsule}");
+            Debug.Log($"Null Collider: CollArea = {area} CapsuleCollider = {colliderCapsule}");
             return false;
         }
 
@@ -712,7 +724,7 @@ public class ExperimentManager : MonoBehaviour
         // Check if the Target area/GameObject exists and has a valid tag
         if (area == null || colliderCapsule == null)
         {
-            //Debug.Log($"Null or Untagged Collidor: CollArea = {area} CaLCollier = {colliderCapsule}");
+            //Debug.Log($"Null or Untagged Collider: CollArea = {area} CapsuleCollider = {colliderCapsule}");
             return false;
         }
 

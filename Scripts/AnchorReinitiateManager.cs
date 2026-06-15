@@ -22,7 +22,7 @@
  * /// provides sufficient constraints to accurately solve for the transformation in all dimensions.
  * 
  * Saving the Data:
- * Check if the ExperimentManager is enabled and has 
+ * Check if the ExperimentManager is enabled in the scene.
  *
  * Author: [Abhinav Azad]
  * Date: [22-12-2024]
@@ -78,8 +78,8 @@ public class AnchorReinitiateManager : MonoBehaviour
     [SerializeField] private UIToggle RegCountRegisterToggle;  // UI toggle to register only first RegCounts
 
     private string fileName = "Anchor_data11";
-    private string filePath;// = $"/storage/emulated/0/Documents/FireEvacCivil/Anchors/";
-    private string anchorDataFilePath;// = "/storage/emulated/0/Documents/FireEvacCivil/Anchors/Anchor_data.json";
+    private string filePath;// Path to directory for anchor data
+    private string anchorDataFilePath;// Full path to anchor data JSON file
 
     private List<AnchorData> anchorDataList = new();
     private List<AnchorData> updatedAnchors = new();
@@ -492,7 +492,7 @@ public class AnchorReinitiateManager : MonoBehaviour
         {
             Debug.LogError("No ExperimentManager found in scene!");
             UpdateUI("No ExperimentManager found in scene!");
-            experimentFolder = $"{Application.persistentDataPath}/FireEvacCivil/{DateTime.Now:yyyy-MM-dd}/Reg_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}/"; ; //Just incase experimentManager is not running and hence Null
+            experimentFolder = $"{Application.persistentDataPath}/ExperimentData/{DateTime.Now:yyyy-MM-dd}/Reg_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}/"; ; //Just incase experimentManager is not running and hence Null
             Debug.Log($"ExperimentManager not found so default experimentFolder created at: {experimentFolder}");
             //return;
         }

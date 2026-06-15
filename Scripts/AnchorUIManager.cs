@@ -62,8 +62,8 @@ public class AnchorUIManager : MonoBehaviour
     [SerializeField] private TMP_InputField fileNameInputField; // Input field for the file name
     [SerializeField] private string fileName = "Anchor_data";
 
-    private string filePath;// = $"/storage/emulated/0/Documents/FireEvacCivil/Anchors/";
-    private string anchorDataFilePath; // = "/storage/emulated/0/Documents/FireEvacCivil/Anchors/Anchor_data.json"; //$"{Application.persistentDataPath}/anchors.json";
+    private string filePath;// Path to directory for anchor data
+    private string anchorDataFilePath; // Full path to anchor data JSON file
     public string AnchorDataFilePathRef => filePath;
 
     public TextMeshProUGUI DebugText; // Reference to the TMP Debug text

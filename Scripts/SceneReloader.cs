@@ -22,7 +22,9 @@
 using System;
 using System.IO;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public class SceneReloader : MonoBehaviour
@@ -174,7 +176,7 @@ public class SceneReloader : MonoBehaviour
 #if UNITY_EDITOR
         string outputFilePath = GetEditedFilePath(AssetDatabase.GetAssetPath(jsonFile));
 #else
-        string outputFilePath = $"{Application.persistentDataPath}/FireEvacCivil/";
+        string outputFilePath = $"{Application.persistentDataPath}/ExperimentData/";
     Debug.LogError("[SceneReloader] Saving scene is only supported in the Unity Editor.");
     return;
 #endif
