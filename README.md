@@ -10,7 +10,7 @@ Scripts use preprocessor directives (`#if MAGICLEAP`, `#if OCULUS`, `#if UNITY_E
 |---|---|---|
 | Magic Leap 2 | `MAGICLEAP` | ML2 OST-HMD |
 | Meta Quest 3 | `OCULUS` | Quest 3 VST-HMD |
-| Unity Editor | `UNITY_EDITOR` | Desktop preview |
+| Unity Editor | `UNITY_EDITOR` | Desktop VR/preview |
 
 ## Architecture Overview
 
